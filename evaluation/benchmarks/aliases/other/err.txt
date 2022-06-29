@@ -17955,7 +17955,7 @@ $'ss | g \'^[!]\' | ppe \'s/^[!]\s+//\''
 $'pip list --outdated --format=legacy | awk \'{print $1}\' | xargs pip install -U pip'
 $'kill -9 $(ps -A | grep [Cc]hrome | awk \'{ print $1 }\')'
 $'kill $(ps -A | grep [Cc]hrome | awk \'{ print $1 }\')'
-$'hadoop fs -ls /user/$USER | awk \'{print $8}\' | xargs hdfs dfs -du -s -h'
+$'hdfs dfs -ls /user/$USER | awk \'{print $8}\' | xargs hdfs dfs -du -s -h'
 $'git_merged | xargs -I {} bash -c \'echo $(git show -s --format=format:%ci $(git merge-base origin/{} master)) {}\' | sort'
 $'git status | grep modified | awk \'{print $3}\''
 $'git pull --prune && git branch -vv | awk \'/: gone]/{print $1}\' | xargs git branch --delete --force'
@@ -44175,8 +44175,8 @@ _(){ lsh $@| grep ~$; }; _
 _(){ lsh $@| grep ^d; }; _
 _(){ lsh $@| grep /$; }; _
 _(){ ll $@| \grep ^d; }; _
-_(){ hadoop fs -cat $1 | wc -l ;}; _
-_(){ hadoop fs -cat $1 | less ;}; _
+_(){ hdfs dfs -cat $1 | wc -l ;}; _
+_(){ hdfs dfs -cat $1 | less ;}; _
 _(){ git symbolic-ref HEAD|sed s#refs/heads/##; }; _
 _(){ find . -iname $1 -exec readlink -f {} + | tee ./$1.txt; }; _
 _(){ cygpath $1 `pwd` | putclip -d; };_

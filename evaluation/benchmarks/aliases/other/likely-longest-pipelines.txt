@@ -17961,7 +17961,7 @@
 3 $'pip list --outdated --format=legacy | awk \'{print $1}\' | xargs pip install -U pip'
 3 $'kill -9 $(ps -A | grep [Cc]hrome | awk \'{ print $1 }\')'
 3 $'kill $(ps -A | grep [Cc]hrome | awk \'{ print $1 }\')'
-3 $'hadoop fs -ls /user/$USER | awk \'{print $8}\' | xargs hdfs dfs -du -s -h'
+3 $'hdfs dfs -ls /user/$USER | awk \'{print $8}\' | xargs hdfs dfs -du -s -h'
 3 $'git_merged | xargs -I {} bash -c \'echo $(git show -s --format=format:%ci $(git merge-base origin/{} master)) {}\' | sort'
 3 $'git status | grep modified | awk \'{print $3}\''
 3 $'git pull --prune && git branch -vv | awk \'/: gone]/{print $1}\' | xargs git branch --delete --force'
@@ -44184,8 +44184,8 @@
 2 _(){ lsh $@| grep ^d; }; _
 2 _(){ lsh $@| grep /$; }; _
 2 _(){ ll $@| \grep ^d; }; _
-2 _(){ hadoop fs -cat $1 | wc -l ;}; _
-2 _(){ hadoop fs -cat $1 | less ;}; _
+2 _(){ hdfs dfs -cat $1 | wc -l ;}; _
+2 _(){ hdfs dfs -cat $1 | less ;}; _
 2 _(){ git symbolic-ref HEAD|sed s#refs/heads/##; }; _
 2 _(){ find . -iname $1 -exec readlink -f {} + | tee ./$1.txt; }; _
 2 _(){ cygpath $1 `pwd` | putclip -d; };_

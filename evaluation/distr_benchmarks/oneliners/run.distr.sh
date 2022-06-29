@@ -90,12 +90,11 @@ oneliners_pash(){
   done
 }
 
-oneliners_hadoopstreaming(){
+oneliners_hadoopstreaming_hdfs(){
   jarpath="/opt/hadoop-3.2.2/share/hadoop/tools/lib/hadoop-streaming-3.2.2.jar" # Adjust as required
-  basepath="" # Adjust as required
-  times_file="hadoopstreaming.res"
-  outputs_suffix="hadoopstreaming.out"
-  outputs_dir="/outputs/hadoop-streaming/oneliners"
+  basepath="/oneliners" # Adjust as required
+  times_file="hadoopstreaming_hdfs.res"
+  outputs_dir="/outputs/hadoop-streaming_hdfs/oneliners"
   . bi-gram.aux.sh
 
   cd "hadoop-streaming/"
@@ -113,9 +112,38 @@ oneliners_hadoopstreaming(){
       name=$(cut -d "#" -f2- <<< "$line")
       name=$(sed "s/ //g" <<< $name)
       padded_script="${name}.sh:${pad}"
-      padded_script=${padded_script:0:20} 
+      padded_script=${padded_script:0:20}
       echo "${padded_script}" $({ time { eval $line &> /dev/null; } } 2>&1) | tee -a "$times_file"
-  done <"run_all.sh"
+  done <"run_hdfs.sh"
+  cd ".."
+  mv "hadoop-streaming/$times_file" .
+}
+
+oneliners_hadoopstreaming_local(){
+  jarpath="/opt/hadoop-3.2.2/share/hadoop/tools/lib/hadoop-streaming-3.2.2.jar" # Adjust as required
+  basepath="/oneliners" # Adjust as required
+  times_file="hadoopstreaming_local.res"
+  outputs_dir="/outputs/hadoop-streaming_local/oneliners"
+  . bi-gram.aux.sh
+
+  cd "hadoop-streaming/"
+
+  hdfs dfs -rm -r "$outputs_dir"
+  hdfs dfs -mkdir -p "$outputs_dir"
+
+  touch "$times_file"
+  cat "$times_file" >> "$times_file".d
+  echo executing oneliners $(date) | tee "$times_file"
+  echo '' >> "$times_file"
+
+  while IFS= read -r line; do
+      printf -v pad %20s
+      name=$(cut -d "#" -f2- <<< "$line")
+      name=$(sed "s/ //g" <<< $name)
+      padded_script="${name}.sh:${pad}"
+      padded_script=${padded_script:0:20}
+      echo "${padded_script}" $({ time { eval $line &> /dev/null; } } 2>&1) | tee -a "$times_file"
+  done <"run_local.sh"
   cd ".."
   mv "hadoop-streaming/$times_file" .
 }
@@ -126,4 +154,6 @@ oneliners_pash "$PASH_FLAGS" "par"
 
 oneliners_pash "$PASH_FLAGS --distributed_exec" "distr"
 
-oneliners_hadoopstreaming
+oneliners_hadoopstreaming_hdfs
+
+oneliners_hadoopstreaming_local
